@@ -11,8 +11,15 @@ import { Button } from '@/components/ui/button';
 import { Play, Home } from 'lucide-react';
 import { useGameContext } from './context/GameContext';
 
+const DIFFICULTY_TIME_CONFIG = {
+  easy: { baseTime: 120, bonusTime: 15 },
+  medium: { baseTime: 90, bonusTime: 12 },
+  hard: { baseTime: 60, bonusTime: 10 },
+  expert: { baseTime: 45, bonusTime: 8 },
+};
+
 export function WordSearchGame() {
-  const { setGameState } = useGameContext();
+  const { setGameState, difficulty } = useGameContext();
   const {
     gameState,
     selectedCells,
@@ -144,7 +151,7 @@ export function WordSearchGame() {
                   <h3 className="font-semibold text-green-600 mb-3 flex items-center">
                     🎯 Palavras Bônus ({bonusWords.length})
                     <span className="ml-2 text-xs bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded">
-                      +{bonusWords.length * DIFFICULTY_TIME_CONFIG[difficulty]?.bonusTime || 10}s
+                      +{bonusWords.length * (DIFFICULTY_TIME_CONFIG[difficulty]?.bonusTime || 10)}s
                     </span>
                   </h3>
                   <div className="space-y-2">

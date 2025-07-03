@@ -444,7 +444,20 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   const [difficulty, setDifficulty] = React.useState<Difficulty>('easy');
   const [achievements, setAchievements] = React.useState<Achievement[]>(() => {
     const saved = localStorage.getItem('wordSearchAchievements');
-    return saved ? JSON.parse(saved) : INITIAL_ACHIEVEMENTS;
+    if (saved) {
+      try {
+        const parsedAchievements = JSON.parse(saved);
+        // Convert unlockedAt strings back to Date objects
+        return parsedAchievements.map((achievement: any) => ({
+          ...achievement,
+          unlockedAt: achievement.unlockedAt ? new Date(achievement.unlockedAt) : undefined
+        }));
+      } catch (error) {
+        console.error('Error parsing achievements from localStorage:', error);
+        return INITIAL_ACHIEVEMENTS;
+      }
+    }
+    return INITIAL_ACHIEVEMENTS;
   });
   const [totalScore, setTotalScore] = React.useState(() => {
     const saved = localStorage.getItem('wordSearchTotalScore');
