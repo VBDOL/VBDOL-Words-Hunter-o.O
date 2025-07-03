@@ -42,6 +42,14 @@ export function WordSearchGame() {
   } = useWordSearchGame();
 
   const [isPaused, setIsPaused] = React.useState(false);
+  const [zoom, setZoom] = React.useState(() => {
+    const saved = localStorage.getItem('wordSearchZoom');
+    return saved ? parseFloat(saved) : 1;
+  });
+
+  React.useEffect(() => {
+    localStorage.setItem('wordSearchZoom', zoom.toString());
+  }, [zoom]);
 
   const handlePause = () => {
     setIsPaused(!isPaused);
@@ -53,8 +61,8 @@ export function WordSearchGame() {
 
   if (timeLeft <= 0 && !isGameComplete) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <Card className="w-full max-w-md p-8 text-center space-y-6">
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-red-50 via-white to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-red-900/20">
+        <Card className="w-full max-w-md p-8 text-center space-y-6 bg-white/90 dark:bg-gray-800/90 backdrop-blur">
           <div className="text-6xl">⏰</div>
           <h2 className="text-2xl font-bold">Tempo Esgotado!</h2>
           <p className="text-muted-foreground">
@@ -77,7 +85,7 @@ export function WordSearchGame() {
   }
 
   return (
-    <>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="container mx-auto px-4 py-8">
         {/* Header with controls */}
         <div className="flex flex-col lg:flex-row gap-6 mb-8">
@@ -91,7 +99,7 @@ export function WordSearchGame() {
               mistakes={mistakes}
             />
           </div>
-          
+
           <div className="flex gap-4">
             <GameTimer
               timeLeft={timeLeft}
@@ -99,20 +107,22 @@ export function WordSearchGame() {
               isRunning={isTimerRunning && !isPaused}
               bonusAnimation={bonusAnimation}
             />
-            
+
             <GameControls
               isPaused={isPaused}
               isGameComplete={isGameComplete}
               onPause={handlePause}
               onBackToMenu={handleBackToMenu}
+              zoom={zoom}
+              onZoomChange={setZoom}
             />
           </div>
         </div>
-        
+
         {/* Game content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <Card className="p-6">
+            <Card className="p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur">
               {isPaused ? (
                 <div className="flex items-center justify-center h-64 text-center">
                   <div className="space-y-4">
@@ -134,19 +144,20 @@ export function WordSearchGame() {
                   foundWords={foundWords}
                   onCellClick={handleCellClick}
                   onCellHover={handleCellHover}
+                  zoom={zoom}
                 />
               )}
             </Card>
           </div>
-          
+
           <div className="lg:col-span-1 space-y-6">
             <WordList
               words={gameState.words}
               foundWords={foundWords}
             />
-            
+
             {bonusWords.length > 0 && (
-              <Card>
+              <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur">
                 <div className="p-4">
                   <h3 className="font-semibold text-green-600 mb-3 flex items-center">
                     🎯 Palavras Bônus ({bonusWords.length})
@@ -185,6 +196,6 @@ export function WordSearchGame() {
         onResetGame={resetGame}
         isVisible={showLevelComplete}
       />
-    </>
+    </div>
   );
 }

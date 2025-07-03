@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { DifficultySelector } from './DifficultySelector';
 import { AchievementsPanel } from './AchievementsPanel';
+import { ThemeToggle } from './ThemeToggle';
 import { useGameContext } from './context/GameContext';
 import { Trophy, Play, Award } from 'lucide-react';
 
@@ -19,21 +20,24 @@ export function MainMenu() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="w-full max-w-4xl space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            VBDOL Words Hunter o.O
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Encontre palavras escondidas no grid e teste suas habilidades!
-          </p>
+        {/* Header with theme toggle */}
+        <div className="flex justify-between items-start">
+          <div className="text-center space-y-4 flex-1">
+            <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Caça-Palavras Brasileiro
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Encontre palavras escondidas no grid e teste suas habilidades em português brasileiro!
+            </p>
+          </div>
+          <ThemeToggle />
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card>
+          <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur">
             <CardContent className="p-6 text-center">
               <Trophy className="w-8 h-8 mx-auto mb-2 text-yellow-500" />
               <div className="text-2xl font-bold">{totalScore.toLocaleString()}</div>
@@ -41,7 +45,7 @@ export function MainMenu() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur">
             <CardContent className="p-6 text-center">
               <Play className="w-8 h-8 mx-auto mb-2 text-blue-500" />
               <div className="text-2xl font-bold">{gamesPlayed}</div>
@@ -51,7 +55,7 @@ export function MainMenu() {
         </div>
 
         {/* Main Menu Card */}
-        <Card className="border-2">
+        <Card className="border-2 bg-white/90 dark:bg-gray-800/90 backdrop-blur">
           <CardHeader>
             <CardTitle className="text-2xl text-center">Escolha sua Dificuldade</CardTitle>
           </CardHeader>

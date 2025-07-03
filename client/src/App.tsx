@@ -2,6 +2,7 @@ import * as React from 'react';
 import { MainMenu } from './components/word-search/MainMenu';
 import { WordSearchGame } from './components/word-search/WordSearchGame';
 import { GameProvider, useGameContext } from './components/word-search/context/GameContext';
+import { ThemeProvider } from './components/word-search/context/ThemeContext';
 import { Footer } from './components/word-search/Footer';
 
 function AppContent() {
@@ -19,9 +20,11 @@ function AppContent() {
 
 function App() {
   return (
-    <GameProvider>
-      <AppContent />
-    </GameProvider>
+    <ThemeProvider>
+      <GameProvider>
+        <AppContent />
+      </GameProvider>
+    </ThemeProvider>
   );
 }
 
