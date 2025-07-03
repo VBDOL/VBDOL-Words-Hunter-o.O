@@ -26,7 +26,8 @@ export function useWordSearchGame() {
     unlockAchievement, 
     addScore, 
     incrementGamesPlayed,
-    setGameState 
+    setGameState,
+    totalScore
   } = useGameContext();
   
   const [currentLevel, setCurrentLevel] = React.useState(1);
@@ -56,6 +57,7 @@ export function useWordSearchGame() {
   const [showLevelComplete, setShowLevelComplete] = React.useState(false);
   const [mistakes, setMistakes] = React.useState(0);
   const [totalBonusTime, setTotalBonusTime] = React.useState(0);
+  const [levelStartTime, setLevelStartTime] = React.useState<Date | null>(null);
 
   const isGameComplete = foundWords.length === gameState.words.length && gameState.words.length > 0;
   const isTimeUp = timeLeft <= 0 && isTimerRunning;
@@ -77,6 +79,8 @@ export function useWordSearchGame() {
       setIsTimerRunning(false);
       setShowLevelComplete(true);
       
+      const levelTime = levelStartTime ? (Date.now() - levelStartTime.getTime()) / 1000 : 0;
+      
       // Calculate score
       const baseScore = foundWords.length * 100;
       const timeBonus = Math.max(0, timeLeft * 2);
@@ -88,39 +92,74 @@ export function useWordSearchGame() {
       addScore(totalScore);
       
       // Check achievements
-      if (currentLevel === 1 && currentPhase === 1) {
-        unlockAchievement('first_game');
-      }
-      
-      if (timeLeft >= 90) {
-        unlockAchievement('speed_demon');
-      }
-      
-      if (bonusWords.length >= 5) {
-        unlockAchievement('word_hunter');
-      }
-      
-      if (mistakes === 0) {
-        unlockAchievement('perfectionist');
-      }
-      
-      if (currentPhase >= 6) {
-        unlockAchievement('master_player');
-      }
-      
-      if (totalBonusTime >= 60) {
-        unlockAchievement('time_master');
-      }
-      
+      checkAchievements(levelTime);
       incrementGamesPlayed();
     }
-  }, [isGameComplete, showLevelComplete, foundWords.length, timeLeft, bonusWords.length, mistakes, currentPhase, currentLevel, totalBonusTime, unlockAchievement, addScore, incrementGamesPlayed]);
+  }, [isGameComplete, showLevelComplete, foundWords.length, timeLeft, bonusWords.length, mistakes, currentPhase, currentLevel, totalBonusTime, levelStartTime, unlockAchievement, addScore, incrementGamesPlayed]);
+
+  const checkAchievements = (levelTime: number) => {
+    // First game/word
+    if (currentLevel === 1 && currentPhase === 1) {
+      unlockAchievement('first_game');
+    }
+    
+    if (foundWords.length > 0) {
+      unlockAchievement('first_word');
+    }
+
+    // Speed achievements
+    if (levelTime <= 30) unlockAchievement('speed_demon');
+    if (levelTime <= 15) unlockAchievement('lightning_fast');
+    if (levelTime <= 10) unlockAchievement('sonic_speed');
+    
+    // Time-based achievements
+    if (timeLeft <= 5) unlockAchievement('comeback_king');
+    
+    // Word bonus achievements
+    if (bonusWords.length >= 5) unlockAchievement('word_hunter');
+    if (bonusWords.length >= 15) unlockAchievement('word_master');
+    
+    // Check for long bonus words
+    bonusWords.forEach(word => {
+      if (word.length >= 8) unlockAchievement('word_discoverer');
+      if (word.length >= 10) unlockAchievement('hidden_treasure');
+      if (word.length >= 12) unlockAchievement('linguistic_genius');
+    });
+    
+    // Perfection achievements
+    if (mistakes === 0) unlockAchievement('perfectionist');
+    
+    // Phase achievements
+    if (currentPhase >= 1) unlockAchievement('beginner_graduate');
+    if (currentPhase >= 2) unlockAchievement('easy_explorer');
+    if (currentPhase >= 3) unlockAchievement('medium_challenger');
+    if (currentPhase >= 4) unlockAchievement('hard_warrior');
+    if (currentPhase >= 5) unlockAchievement('expert_sage');
+    if (currentPhase >= 6) unlockAchievement('master_player');
+    
+    // Time bonus achievements
+    if (totalBonusTime >= 60) unlockAchievement('time_master');
+    if (totalBonusTime >= 300) unlockAchievement('time_banker');
+    if (totalBonusTime >= 600) unlockAchievement('chronos_gift');
+    
+    // Score achievements
+    if (totalScore >= 10000) unlockAchievement('high_scorer');
+    if (totalScore >= 50000) unlockAchievement('score_champion');
+    if (totalScore >= 100000) unlockAchievement('score_legend');
+    
+    // Special time achievements
+    const hour = new Date().getHours();
+    if (hour === 2) unlockAchievement('night_owl');
+    if (hour === 6) unlockAchievement('early_bird');
+    
+    // Lucky seven
+    if (foundWords.length === 7) unlockAchievement('lucky_seven');
+  };
 
   // Time up effect
   React.useEffect(() => {
     if (isTimeUp) {
       setIsTimerRunning(false);
-      // Could show game over screen here
     }
   }, [isTimeUp]);
 
@@ -154,6 +193,7 @@ export function useWordSearchGame() {
     setMistakes(0);
     setCurrentScore(0);
     setShowLevelComplete(false);
+    setLevelStartTime(new Date());
     
     // Set timer based on difficulty and level
     const timeConfig = DIFFICULTY_TIME_CONFIG[difficulty];
@@ -239,18 +279,38 @@ export function useWordSearchGame() {
     
     if (foundWordPosition && !foundWords.some(fw => fw.word === foundWordPosition.word)) {
       setFoundWords(prev => [...prev, foundWordPosition]);
+      
+      // Check for eagle eye achievement (first word found quickly)
+      if (foundWords.length === 0 && levelStartTime) {
+        const timeElapsed = (Date.now() - levelStartTime.getTime()) / 1000;
+        if (timeElapsed <= 3) {
+          unlockAchievement('eagle_eye');
+        }
+      }
     } else {
       // Check if it's a bonus word (valid Portuguese word not in target list)
       const lowerWord = word.toLowerCase();
-      const isValidBonusWord = WORD_DATABASE.includes(lowerWord) && 
-                               !gameState.words.includes(lowerWord) &&
-                               !bonusWords.includes(lowerWord) &&
-                               lowerWord.length >= 4;
+      const lowerReverseWord = reverseWord.toLowerCase();
+      
+      const checkWord = (wordToCheck: string) => {
+        return WORD_DATABASE.includes(wordToCheck) && 
+               !gameState.words.includes(wordToCheck) &&
+               !bonusWords.includes(wordToCheck) &&
+               wordToCheck.length >= 4;
+      };
+      
+      const isValidBonusWord = checkWord(lowerWord) || checkWord(lowerReverseWord);
       
       if (isValidBonusWord) {
-        setBonusWords(prev => [...prev, lowerWord]);
+        const bonusWord = checkWord(lowerWord) ? lowerWord : lowerReverseWord;
+        setBonusWords(prev => [...prev, bonusWord]);
         const bonusTime = DIFFICULTY_TIME_CONFIG[difficulty].bonusTime;
         addBonusTime(bonusTime);
+        
+        // Check for palindrome
+        if (bonusWord === bonusWord.split('').reverse().join('')) {
+          unlockAchievement('palindrome_finder');
+        }
       } else if (selectedCellsArray.length >= 3) {
         // Count as mistake only for attempts of 3+ letters
         setMistakes(prev => prev + 1);

@@ -3,11 +3,12 @@ import { GameBoard } from './GameBoard';
 import { WordList } from './WordList';
 import { GameHeader } from './GameHeader';
 import { GameTimer } from './GameTimer';
+import { GameControls } from './GameControls';
 import { LevelCompleteAnimation } from './LevelCompleteAnimation';
 import { useWordSearchGame } from './hooks/useWordSearchGame';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Pause, Play, Home } from 'lucide-react';
+import { Play, Home } from 'lucide-react';
 import { useGameContext } from './context/GameContext';
 
 export function WordSearchGame() {
@@ -92,24 +93,12 @@ export function WordSearchGame() {
               bonusAnimation={bonusAnimation}
             />
             
-            <div className="flex flex-col gap-2">
-              <Button
-                onClick={handlePause}
-                variant="outline"
-                size="icon"
-                disabled={isGameComplete}
-              >
-                {isPaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
-              </Button>
-              
-              <Button
-                onClick={handleBackToMenu}
-                variant="outline"
-                size="icon"
-              >
-                <Home className="h-4 w-4" />
-              </Button>
-            </div>
+            <GameControls
+              isPaused={isPaused}
+              isGameComplete={isGameComplete}
+              onPause={handlePause}
+              onBackToMenu={handleBackToMenu}
+            />
           </div>
         </div>
         
@@ -120,8 +109,11 @@ export function WordSearchGame() {
               {isPaused ? (
                 <div className="flex items-center justify-center h-64 text-center">
                   <div className="space-y-4">
-                    <Pause className="w-16 h-16 mx-auto text-muted-foreground" />
+                    <div className="text-6xl">⏸️</div>
                     <h3 className="text-xl font-semibold">Jogo Pausado</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Clique em continuar para retomar o jogo
+                    </p>
                     <Button onClick={handlePause}>
                       <Play className="w-4 h-4 mr-2" />
                       Continuar
@@ -151,16 +143,23 @@ export function WordSearchGame() {
                 <div className="p-4">
                   <h3 className="font-semibold text-green-600 mb-3 flex items-center">
                     🎯 Palavras Bônus ({bonusWords.length})
+                    <span className="ml-2 text-xs bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded">
+                      +{bonusWords.length * DIFFICULTY_TIME_CONFIG[difficulty]?.bonusTime || 10}s
+                    </span>
                   </h3>
                   <div className="space-y-2">
                     {bonusWords.map((word, index) => (
                       <div
                         key={index}
-                        className="text-sm bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 px-2 py-1 rounded border border-green-200 dark:border-green-800"
+                        className="text-sm bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 px-2 py-1 rounded border border-green-200 dark:border-green-800 flex justify-between items-center"
                       >
-                        {word.toUpperCase()}
+                        <span>{word.toUpperCase()}</span>
+                        <span className="text-xs opacity-75">{word.length} letras</span>
                       </div>
                     ))}
+                  </div>
+                  <div className="mt-3 text-xs text-muted-foreground">
+                    💡 Continue procurando palavras que não estão na lista para ganhar mais tempo!
                   </div>
                 </div>
               </Card>
