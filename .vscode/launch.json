@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug React App",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/dev.ts",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "start"
+      ],
+      "port": 3000,
+      "webRoot": "${workspaceFolder}/client/src",
+      "sourceMaps": true
+    }
+  ]
+}

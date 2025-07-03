@@ -24,10 +24,10 @@ export function MainMenu() {
         {/* Header */}
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Caça-Palavras Brasileiro
+            VBDOL Words Hunter o.O
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Encontre palavras escondidas no grid e teste suas habilidades em português brasileiro!
+            Encontre palavras escondidas no grid e teste suas habilidades!
           </p>
         </div>
 
@@ -40,7 +40,7 @@ export function MainMenu() {
               <div className="text-sm text-muted-foreground">Pontuação Total</div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-6 text-center">
               <Play className="w-8 h-8 mx-auto mb-2 text-blue-500" />
@@ -57,9 +57,9 @@ export function MainMenu() {
           </CardHeader>
           <CardContent className="space-y-6">
             <DifficultySelector />
-            
+
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button 
+              <Button
                 onClick={handleStartGame}
                 size="lg"
                 className="flex-1 text-lg py-6"
@@ -67,8 +67,8 @@ export function MainMenu() {
                 <Play className="w-5 h-5 mr-2" />
                 Iniciar Jogo
               </Button>
-              
-              <Button 
+
+              <Button
                 onClick={handleShowAchievements}
                 variant="outline"
                 size="lg"
@@ -88,13 +88,13 @@ export function MainMenu() {
             <h3 className="font-semibold">Contrarrelógio</h3>
             <p className="text-sm text-muted-foreground">Complete os níveis antes do tempo acabar</p>
           </div>
-          
+
           <div className="space-y-2">
             <div className="text-2xl">🎯</div>
             <h3 className="font-semibold">Palavras Bônus</h3>
             <p className="text-sm text-muted-foreground">Encontre palavras extras para ganhar tempo</p>
           </div>
-          
+
           <div className="space-y-2">
             <div className="text-2xl">🏆</div>
             <h3 className="font-semibold">Conquistas</h3>
