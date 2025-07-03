@@ -439,6 +439,32 @@ const INITIAL_ACHIEVEMENTS: Achievement[] = [
   },
 ];
 
+// Function to merge saved achievements with the current achievement list
+function mergeAchievements(savedAchievements: any[], initialAchievements: Achievement[]): Achievement[] {
+  const savedMap = new Map();
+  
+  // Create a map of saved achievements with proper date conversion
+  savedAchievements.forEach(saved => {
+    savedMap.set(saved.id, {
+      ...saved,
+      unlockedAt: saved.unlockedAt ? new Date(saved.unlockedAt) : undefined
+    });
+  });
+
+  // Merge with initial achievements, preserving unlock status for existing ones
+  return initialAchievements.map(initial => {
+    const saved = savedMap.get(initial.id);
+    if (saved) {
+      return {
+        ...initial,
+        unlocked: saved.unlocked,
+        unlockedAt: saved.unlockedAt
+      };
+    }
+    return initial;
+  });
+}
+
 export function GameProvider({ children }: { children: React.ReactNode }) {
   const [gameState, setGameState] = React.useState<GameState>('menu');
   const [difficulty, setDifficulty] = React.useState<Difficulty>('easy');
@@ -447,11 +473,8 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     if (saved) {
       try {
         const parsedAchievements = JSON.parse(saved);
-        // Convert unlockedAt strings back to Date objects
-        return parsedAchievements.map((achievement: any) => ({
-          ...achievement,
-          unlockedAt: achievement.unlockedAt ? new Date(achievement.unlockedAt) : undefined
-        }));
+        // Merge saved achievements with the complete initial list
+        return mergeAchievements(parsedAchievements, INITIAL_ACHIEVEMENTS);
       } catch (error) {
         console.error('Error parsing achievements from localStorage:', error);
         return INITIAL_ACHIEVEMENTS;

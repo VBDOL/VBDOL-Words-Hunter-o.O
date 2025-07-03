@@ -43,14 +43,26 @@ export function AchievementsPanel({ onClose }: AchievementsPanelProps) {
         category = '💎 Perfeição';
       } else if (achievement.name.includes('Tempo') || achievement.name.includes('Cronos')) {
         category = '⏰ Tempo';
-      } else if (achievement.name.includes('Mestre') || achievement.name.includes('Fase') || achievement.name.includes('Graduado')) {
+      } else if (achievement.name.includes('Mestre') || achievement.name.includes('Fase') || achievement.name.includes('Graduado') || achievement.name.includes('Explorador') || achievement.name.includes('Desafiante') || achievement.name.includes('Guerreiro') || achievement.name.includes('Sábio') || achievement.name.includes('Jogador Mestre')) {
         category = '🏆 Progresso';
-      } else if (achievement.name.includes('Pontu') || achievement.name.includes('Score')) {
+      } else if (achievement.name.includes('Pontu') || achievement.name.includes('Score') || achievement.name.includes('Campeão') || achievement.name.includes('Lenda')) {
         category = '🎯 Pontuação';
-      } else if (achievement.name.includes('Sequência') || achievement.name.includes('Seguidos') || achievement.name.includes('Consecutivos')) {
+      } else if (achievement.name.includes('Sequência') || achievement.name.includes('Seguidos') || achievement.name.includes('Consecutivos') || achievement.name.includes('Imparável')) {
         category = '🔥 Sequências';
       } else if (achievement.name.includes('Conquist') || achievement.name.includes('Colecion') || achievement.name.includes('Completist')) {
         category = '🏅 Meta';
+      } else if (achievement.name.includes('Descobridor') || achievement.name.includes('Tesouro') || achievement.name.includes('Gênio') || achievement.name.includes('Olho de Águia')) {
+        category = '🔍 Descoberta';
+      } else if (achievement.name.includes('Grid') || achievement.name.includes('Pequeno') || achievement.name.includes('Médio') || achievement.name.includes('Grande')) {
+        category = '⬜ Grid';
+      } else if (achievement.name.includes('Persistente') || achievement.name.includes('Dedicado') || achievement.name.includes('Maratonista')) {
+        category = '📅 Persistência';
+      } else if (achievement.name.includes('Fácil') || achievement.name.includes('Difícil') || achievement.name.includes('Expert') && achievement.name.includes('Mestre')) {
+        category = '🎮 Dificuldade';
+      } else if (achievement.name.includes('Sorte') || achievement.name.includes('Palíndromo') || achievement.name.includes('Sopa') || achievement.name.includes('Coruja') || achievement.name.includes('Madrugador') || achievement.name.includes('Rei')) {
+        category = '🎪 Especiais';
+      } else if (achievement.name.includes('Primeira') || achievement.name.includes('Veterano') || achievement.name.includes('Centenário')) {
+        category = '🌱 Iniciante';
       }
       
       if (!cats.has(category)) {
