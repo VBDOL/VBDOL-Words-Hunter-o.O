@@ -18,6 +18,46 @@ const DIFFICULTY_TIME_CONFIG = {
   expert: { baseTime: 45, bonusTime: 8 },
 };
 
+// Function to get color classes based on word length
+const getBonusWordColor = (wordLength: number) => {
+  if (wordLength >= 10) {
+    return {
+      bg: 'bg-purple-100 dark:bg-purple-900/30',
+      border: 'border-purple-300 dark:border-purple-700',
+      text: 'text-purple-800 dark:text-purple-200',
+      icon: '💜'
+    };
+  } else if (wordLength >= 8) {
+    return {
+      bg: 'bg-blue-100 dark:bg-blue-900/30',
+      border: 'border-blue-300 dark:border-blue-700',
+      text: 'text-blue-800 dark:text-blue-200',
+      icon: '💙'
+    };
+  } else if (wordLength >= 6) {
+    return {
+      bg: 'bg-green-100 dark:bg-green-900/30',
+      border: 'border-green-300 dark:border-green-700',
+      text: 'text-green-800 dark:text-green-200',
+      icon: '💚'
+    };
+  } else if (wordLength >= 5) {
+    return {
+      bg: 'bg-yellow-100 dark:bg-yellow-900/30',
+      border: 'border-yellow-300 dark:border-yellow-700',
+      text: 'text-yellow-800 dark:text-yellow-200',
+      icon: '💛'
+    };
+  } else {
+    return {
+      bg: 'bg-orange-100 dark:bg-orange-900/30',
+      border: 'border-orange-300 dark:border-orange-700',
+      text: 'text-orange-800 dark:text-orange-200',
+      icon: '🧡'
+    };
+  }
+};
+
 export function WordSearchGame() {
   const { setGameState, difficulty } = useGameContext();
   const {
@@ -166,18 +206,42 @@ export function WordSearchGame() {
                     </span>
                   </h3>
                   <div className="space-y-2">
-                    {bonusWords.map((word, index) => (
-                      <div
-                        key={index}
-                        className="text-sm bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 px-2 py-1 rounded border border-green-200 dark:border-green-800 flex justify-between items-center"
-                      >
-                        <span>{word.toUpperCase()}</span>
-                        <span className="text-xs opacity-75">{word.length} letras</span>
-                      </div>
-                    ))}
+                    {bonusWords.map((word, index) => {
+                      const colorClass = getBonusWordColor(word.length);
+                      return (
+                        <div
+                          key={index}
+                          className={`text-sm ${colorClass.bg} ${colorClass.text} px-3 py-2 rounded-lg border ${colorClass.border} flex justify-between items-center transition-all duration-200 hover:scale-102 shadow-sm`}
+                        >
+                          <div className="flex items-center space-x-2">
+                            <span className="text-sm">{colorClass.icon}</span>
+                            <span className="font-medium">{word.toUpperCase()}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-xs opacity-75 font-medium">
+                              {word.length} letras
+                            </span>
+                            <span className="text-xs bg-white/50 dark:bg-black/20 px-1.5 py-0.5 rounded">
+                              +{DIFFICULTY_TIME_CONFIG[difficulty]?.bonusTime || 10}s
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                  <div className="mt-3 text-xs text-muted-foreground">
-                    💡 Continue procurando palavras que não estão na lista para ganhar mais tempo!
+                  <div className="mt-4 p-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <div className="text-xs text-muted-foreground space-y-1">
+                      <p className="font-medium text-blue-700 dark:text-blue-300">
+                        💡 Dica: Palavras maiores valem mais tempo!
+                      </p>
+                      <div className="grid grid-cols-2 gap-1 text-xs">
+                        <span>🧡 4 letras: +{DIFFICULTY_TIME_CONFIG[difficulty]?.bonusTime || 10}s</span>
+                        <span>💛 5 letras: +{DIFFICULTY_TIME_CONFIG[difficulty]?.bonusTime || 10}s</span>
+                        <span>💚 6-7 letras: +{DIFFICULTY_TIME_CONFIG[difficulty]?.bonusTime || 10}s</span>
+                        <span>💙 8-9 letras: +{DIFFICULTY_TIME_CONFIG[difficulty]?.bonusTime || 10}s</span>
+                        <span className="col-span-2">💜 10+ letras: +{DIFFICULTY_TIME_CONFIG[difficulty]?.bonusTime || 10}s</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </Card>

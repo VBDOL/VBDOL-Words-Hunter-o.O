@@ -33,10 +33,10 @@ export function Footer() {
               Criado por <span className="font-bold text-primary">VBDOL.DEV</span>
             </p>
             <p className="text-xs text-muted-foreground">
-              Caça-Palavras Brasileiro © 2024
+              Caça-Palavras © 2025
             </p>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             {socialLinks.map((link) => {
               const IconComponent = link.icon;
@@ -55,7 +55,7 @@ export function Footer() {
             })}
           </div>
         </div>
-        
+
         <div className="mt-4 pt-4 border-t text-center">
           <p className="text-xs text-muted-foreground">
             Desenvolvido com React, TypeScript e Tailwind CSS

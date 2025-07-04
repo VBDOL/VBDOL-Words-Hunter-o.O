@@ -42,47 +42,61 @@ export function GameBoard({
   // Calculate cell size based on zoom
   const baseCellSize = 40; // Base size in pixels
   const cellSize = Math.round(baseCellSize * zoom);
+  const gridCols = grid[0]?.length || 0;
+  const gridRows = grid.length;
+
+  // Calculate total grid dimensions
+  const totalGridWidth = gridCols * cellSize + (gridCols - 1) * 4; // including gaps
+  const totalGridHeight = gridRows * cellSize + (gridRows - 1) * 4; // including gaps
 
   return (
-    <div className="flex justify-center overflow-auto p-4">
+    <div className="w-full h-full flex items-center justify-center overflow-auto p-4">
       <div
-        className="grid gap-1 select-none transition-all duration-200"
+        className="flex-shrink-0"
         style={{
-          gridTemplateColumns: `repeat(${grid[0]?.length || 0}, ${cellSize}px)`,
-          transform: `scale(${zoom})`,
-          transformOrigin: 'center'
+          minWidth: `${totalGridWidth}px`,
+          minHeight: `${totalGridHeight}px`,
         }}
       >
-        {grid.map((row, rowIndex) =>
-          row.map((cell, colIndex) => {
-            const cellKey = `${rowIndex}-${colIndex}`;
-            const isSelected = selectedCells.has(cellKey);
-            const isFound = foundCells.has(cellKey);
+        <div
+          className="grid gap-1 select-none mx-auto"
+          style={{
+            gridTemplateColumns: `repeat(${gridCols}, ${cellSize}px)`,
+            width: 'fit-content',
+          }}
+        >
+          {grid.map((row, rowIndex) =>
+            row.map((cell, colIndex) => {
+              const cellKey = `${rowIndex}-${colIndex}`;
+              const isSelected = selectedCells.has(cellKey);
+              const isFound = foundCells.has(cellKey);
 
-            return (
-              <button
-                key={cellKey}
-                className={cn(
-                  "border border-border font-mono font-semibold transition-all duration-200 hover:scale-110 rounded-sm",
-                  {
-                    "bg-blue-200 text-blue-800 dark:bg-blue-700 dark:text-blue-100": isSelected && !isFound,
-                    "bg-green-200 text-green-800 dark:bg-green-700 dark:text-green-100": isFound,
-                    "bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700": !isSelected && !isFound,
-                  }
-                )}
-                style={{
-                  width: `${cellSize}px`,
-                  height: `${cellSize}px`,
-                  fontSize: `${Math.max(12, cellSize * 0.35)}px`
-                }}
-                onClick={() => handleCellClick(rowIndex, colIndex)}
-                onMouseEnter={() => handleCellHover(rowIndex, colIndex)}
-              >
-                {cell}
-              </button>
-            );
-          })
-        )}
+              return (
+                <button
+                  key={cellKey}
+                  className={cn(
+                    "border border-border font-mono font-semibold transition-all duration-200 hover:scale-110 rounded-sm flex items-center justify-center",
+                    {
+                      "bg-blue-200 text-blue-800 dark:bg-blue-700 dark:text-blue-100": isSelected && !isFound,
+                      "bg-green-200 text-green-800 dark:bg-green-700 dark:text-green-100": isFound,
+                      "bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700": !isSelected && !isFound,
+                    }
+                  )}
+                  style={{
+                    width: `${cellSize}px`,
+                    height: `${cellSize}px`,
+                    fontSize: `${Math.max(12, cellSize * 0.35)}px`,
+                    lineHeight: '1'
+                  }}
+                  onClick={() => handleCellClick(rowIndex, colIndex)}
+                  onMouseEnter={() => handleCellHover(rowIndex, colIndex)}
+                >
+                  {cell}
+                </button>
+              );
+            })
+          )}
+        </div>
       </div>
     </div>
   );
