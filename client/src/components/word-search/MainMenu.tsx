@@ -26,10 +26,10 @@ export function MainMenu() {
         <div className="flex justify-between items-start">
           <div className="text-center space-y-4 flex-1">
             <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Caça-Palavras Brasileiro
+              VBDOL Words Hunter o.O
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Encontre palavras escondidas no grid e teste suas habilidades em português brasileiro!
+              Encontre palavras escondidas no grid e teste suas habilidades!
             </p>
           </div>
           <ThemeToggle />
